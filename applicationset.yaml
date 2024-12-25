@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: mario-dev
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: git@github.com:your-org/your-repo.git
+    targetRevision: HEAD
+    path: kustomize/mario
+    kustomize:
+      helmCharts:
+        - name: mario
+          chart: ../../helms/mario
+          valuesFile: dev-values.yaml
+          namespace: dev
+  destination:
+    namespace: dev
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
